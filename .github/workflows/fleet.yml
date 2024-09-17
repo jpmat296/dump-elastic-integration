@@ -1,0 +1,45 @@
+---
+name: Run Fleet server and extract Elastic integration
+'on':
+  pull_request:
+  push:
+
+jobs:
+
+  molecule:
+    name: Molecule
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version:
+          - 8.15.1
+        distro:
+          - ubuntu-22.04
+
+    steps:
+      - name: Check out the codebase.
+        uses: actions/checkout@v2
+
+      - name: Start containers
+        run: |
+          cd molecule/setup/es_kb_fleet
+          sed -i 's/^STACK_VERSION=.*/STACK_VERSION=${{ matrix.version }}/g' .env
+          ./elastic-container.sh start
+
+      - name: Install test dependencies.
+        run: pip3 install ansible molecule 'molecule-plugins[docker]'
+
+      # - name: Run Molecule tests.
+      #   run: |
+      #     STACK_VERSION=${{ matrix.version }} molecule test -s enroll
+      #     STACK_VERSION=${{ matrix.version }} molecule test -s uninstall
+      #   env:
+      #     PY_COLORS: '1'
+      #     ANSIBLE_FORCE_COLOR: '1'
+      #     MOLECULE_DISTRO: ${{ matrix.distro }}
+
+      - name: Stop containers
+        if: always()
+        run: |
+          cd molecule/setup/es_kb_fleet
+          STACK_VERSION=${{ matrix.version }} ./elastic-container.sh destroy
