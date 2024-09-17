@@ -26,17 +26,14 @@ jobs:
           sed -i 's/^STACK_VERSION=.*/STACK_VERSION=${{ matrix.version }}/g' .env
           ./elastic-container.sh start
 
-      - name: Install test dependencies.
-        run: pip3 install ansible molecule 'molecule-plugins[docker]'
+      - name: Install scripts dependencies.
+        run: pip3 install -r ./scripts/requirements.txt
 
-      # - name: Run Molecule tests.
-      #   run: |
-      #     STACK_VERSION=${{ matrix.version }} molecule test -s enroll
-      #     STACK_VERSION=${{ matrix.version }} molecule test -s uninstall
-      #   env:
-      #     PY_COLORS: '1'
-      #     ANSIBLE_FORCE_COLOR: '1'
-      #     MOLECULE_DISTRO: ${{ matrix.distro }}
+      - name: Run scripts
+        run: |
+          python3 ./scripts/dump_index_templates.py
+          python3 ./scripts/dump_ingest.py
+          python3 ./scripts/dump_kibana_objects.py
 
       - name: Stop containers
         if: always()
