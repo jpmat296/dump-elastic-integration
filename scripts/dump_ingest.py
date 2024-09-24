@@ -13,6 +13,6 @@ with open("dev_tools_ingest.txt", "w") as outfile:
     outfile.write("GET _ingest/pipeline/*-infoblox_nios.*?filter_path=*.description\n")
     for ig in igs.body.keys():
         outfile.write("\n")
-        outfile.write(f"PUT _index_template/{ig}\n")
+        outfile.write(f"PUT _ingest/pipeline/{ig}\n")
         json.dump(igs[ig], outfile, indent=2)
         outfile.write("\n")

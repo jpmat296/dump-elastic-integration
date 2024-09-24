@@ -20,6 +20,7 @@ with open("objects.ndjson", "w") as outfile:
         obj = json.loads(line)
         if 'panw' in obj['id']:
             outfile.write(line)
+            outfile.write('\n')
             if obj['type'] == 'tag':
                 tag += 1
             elif obj['type'] == 'dashboard':
