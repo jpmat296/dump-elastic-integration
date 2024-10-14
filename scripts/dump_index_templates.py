@@ -4,10 +4,10 @@ import json
 
 es = Elasticsearch('https://elastic:change_me@localhost:9200/', verify_certs=False)
 
-cts = es.cluster.get_component_template(name='logs-netflow.panos@package')
+cts = es.cluster.get_component_template(name='logs-netflow.log@package')
 print(f"{len(cts['component_templates'])} component templates found.")
 
-tmpls = es.indices.get_index_template(name='logs-netflow.panos')
+tmpls = es.indices.get_index_template(name='logs-netflow.log')
 print(f"{len(tmpls['index_templates'])} index templates found.")
 
 with open("dev_tools_index.txt", "w") as outfile: 
