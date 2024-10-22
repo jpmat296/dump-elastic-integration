@@ -4,7 +4,7 @@ import json
 
 es = Elasticsearch('https://elastic:change_me@localhost:9200/', verify_certs=False)
 
-igs = es.ingest.get_pipeline(id='logs-panw.*')
+igs = es.ingest.get_pipeline(id='logs-apache.*')
 print(f"{len(igs.body.keys())} ingest pipelines found.")
 
 with open("dev_tools_ingest.txt", "w") as outfile: 

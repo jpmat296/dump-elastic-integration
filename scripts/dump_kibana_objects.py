@@ -18,7 +18,7 @@ dashboards = 0
 with open("objects.ndjson", "w") as outfile:
     for line in res.text.splitlines()[:-1]:
         obj = json.loads(line)
-        if 'panw' in obj['id']:
+        if 'apache' in obj['id']:
             outfile.write(line)
             outfile.write('\n')
             if obj['type'] == 'tag':
