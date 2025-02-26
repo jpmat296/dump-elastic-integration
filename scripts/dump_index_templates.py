@@ -1,26 +1,49 @@
 from elasticsearch import Elasticsearch
+from elasticsearch import NotFoundError
 
 import json
 
 es = Elasticsearch('https://elastic:change_me@localhost:9200/', verify_certs=False)
 
-cts = es.cluster.get_component_template(name='logs-panw.panos@package')
-print(f"{len(cts['component_templates'])} component templates found.")
+cts = list()
+try:
+    logs_resp = es.cluster.get_component_template(name='logs-panw.*@package')
+    cts.extend(logs_resp['component_templates'])
+    print(f"{len(logs_resp['component_templates'])} logs component templates found.")
+except NotFoundError:
+    print("No logs component templates found.")
+try:
+    metrics_resp = es.cluster.get_component_template(name='metrics-panw.*@package')
+    cts.extend(metrics_resp['component_templates'])
+    print(f"{len(metrics_resp['component_templates'])} metrics component templates found.")
+except NotFoundError:
+    print("No metrics component templates found.")    
 
-tmpls = es.indices.get_index_template(name='logs-panw.panos')
-print(f"{len(tmpls['index_templates'])} index templates found.")
+tmpls = list()
+try:
+    logs_resp2 = es.indices.get_index_template(name='logs-panw.*')
+    tmpls.extend(logs_resp2['index_templates'])
+    print(f"{len(logs_resp2['index_templates'])} logs index templates found.")
+except NotFoundError:
+    print("No logs index templates found.")
+try:
+    metrics_resp2 = es.indices.get_index_template(name='metrics-panw.*')
+    tmpls.extend(metrics_resp2['index_templates'])
+    print(f"{len(metrics_resp2['index_templates'])} metrics index templates found.")
+except NotFoundError:
+    print("No metrics index templates found.")
 
 with open("dev_tools_index.txt", "w") as outfile: 
-    outfile.write("# After below commands, 1 component template  + 1 index template exist\n")
+    outfile.write(f"# After below commands, {len(cts)} component template(s) + {len(tmpls)} index template(s) exist(s)\n")
     outfile.write("# To check:\n")
     outfile.write("GET _component_template/*-panw.*?filter_path=*.name\n")
     outfile.write("GET _index_template/*-panw.*?filter_path=*.name\n")
-    for ct in cts['component_templates']:
+    for ct in cts:
         outfile.write("\n")
         outfile.write(f"PUT _component_template/{ct['name']}\n")
         json.dump(ct['component_template'], outfile, indent=2)
         outfile.write("\n")
-    for tmpl in tmpls['index_templates']:
+    for tmpl in tmpls:
         outfile.write("\n")
         outfile.write(f"PUT _index_template/{tmpl['name']}\n")
         json.dump(tmpl['index_template'], outfile, indent=2)
