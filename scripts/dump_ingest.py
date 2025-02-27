@@ -14,7 +14,7 @@ print(f"{len(igs)} ingest pipelines found.")
 with open("dev_tools_ingest.txt", "w") as outfile: 
     outfile.write(f"# After below commands, {len(igs)} pipeline(s) exist(s)\n")
     outfile.write("# To check:\n")
-    outfile.write("GET _ingest/pipeline/*-haproxy.*?filter_path=*.description\n")
+    outfile.write("GET _ingest/pipeline/*-haproxy.*?filter_path=**.description\n")
     for ig in igs:
         iname = next(iter(ig.keys()))
         outfile.write("\n")
