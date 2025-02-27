@@ -10,7 +10,7 @@ print(f"{len(igs.body.keys())} ingest pipelines found.")
 with open("dev_tools_ingest.txt", "w") as outfile: 
     outfile.write("# After below commands, 4 pipelines exist")
     outfile.write("# To check:\n")
-    outfile.write("GET _ingest/pipeline/*-infoblox_nios.*?filter_path=*.description\n")
+    outfile.write("GET _ingest/pipeline/*-infoblox_nios.*?filter_path=**.description\n")
     for ig in igs.body.keys():
         outfile.write("\n")
         outfile.write(f"PUT _ingest/pipeline/{ig}\n")
