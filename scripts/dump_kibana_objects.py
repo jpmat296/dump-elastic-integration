@@ -11,6 +11,7 @@ res = requests.post(url=f"{base_url}api/saved_objects/_export", verify=False, js
     }
 )
 
+views = 0
 tag = 0
 search = 0
 dashboards = 0
@@ -18,6 +19,10 @@ dashboards = 0
 with open("objects.ndjson", "w") as outfile:
     for line in res.text.splitlines()[:-1]:
         obj = json.loads(line)
+        if 'metrics-*' == obj['id'] or 'logs-*' == obj['id']:
+            outfile.write(line)
+            outfile.write('\n')
+            views += 1
         if 'haproxy' in obj['id']:
             outfile.write(line)
             outfile.write('\n')
@@ -31,6 +36,7 @@ with open("objects.ndjson", "w") as outfile:
                 print(f"Unknown object type: {obj['type']}")
 
 print("Saved objects exported in file objects.ndjson")
+print(f"{views} data views exported")
 print(f"{tag} tags exported")
 print(f"{search} searches exported")
 print(f"{dashboards} dashboards exported")
