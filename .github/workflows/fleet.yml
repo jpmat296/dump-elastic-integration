@@ -13,6 +13,8 @@ jobs:
       matrix:
         version:
           - 8.16.1
+        integration:
+          - panw
         distro:
           - ubuntu-22.04
 
@@ -31,10 +33,11 @@ jobs:
 
       - name: Run scripts
         run: |
-          python3 ./scripts/install_integration.py
-          python3 ./scripts/dump_index_templates.py
-          python3 ./scripts/dump_ingest.py
-          python3 ./scripts/dump_kibana_objects.py
+          export VERSION=$(python3 ./scripts/find_integration_version.py ${{ matrix.integration }})
+          python3 ./scripts/install_integration.py ${{ matrix.integration }} $VERSION
+          python3 ./scripts/dump_index_templates.py ${{ matrix.integration }}
+          python3 ./scripts/dump_ingest.py ${{ matrix.integration }}
+          python3 ./scripts/dump_kibana_objects.py ${{ matrix.integration }}
 
       - name: Group artifacts in directory artifacts
         run: |

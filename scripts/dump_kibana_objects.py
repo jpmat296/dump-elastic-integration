@@ -1,5 +1,8 @@
+import sys
 import requests
 import json
+
+integration = sys.argv[1]
 
 base_url = 'https://elastic:change_me@localhost:5601/'
 
@@ -23,7 +26,7 @@ with open("objects.ndjson", "w") as outfile:
             outfile.write(line)
             outfile.write('\n')
             views += 1
-        if 'panw' in obj['id']:
+        if f"{integration}" in obj['id']:
             outfile.write(line)
             outfile.write('\n')
             if obj['type'] == 'tag':
