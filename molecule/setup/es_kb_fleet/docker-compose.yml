@@ -1,11 +1,9 @@
-version: "2.2"
-
 services:
   setup:
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     container_name: ecp-elasticsearch-security-setup
     volumes:
-      - certs:/usr/share/elasticsearch/config/certs:z
+      - certs:/usr/share/elasticsearch/config/certs
     user: "0"
     command: >
       bash -c '
@@ -31,22 +29,18 @@ services:
           "      - localhost\n"\
           "    ip:\n"\
           "      - 127.0.0.1\n"\
-          "      - ${DOCKER_HOST_IP}\n"\
           "  - name: kibana\n"\
           "    dns:\n"\
           "      - ecp-kibana\n"\
           "      - localhost\n"\
           "    ip:\n"\
           "      - 127.0.0.1\n"\
-          "      - ${DOCKER_HOST_IP}\n"\
           "  - name: fleet-server\n"\
           "    dns:\n"\
           "      - ecp-fleet-server\n"\
           "      - localhost\n"\
-          "      - ${DOCKER_HOST_NAME}\n"\
           "    ip:\n"\
           "      - 127.0.0.1\n"\
-          "      - ${DOCKER_HOST_IP}\n"\
           > config/certs/instances.yml;
           bin/elasticsearch-certutil cert --silent --pem -out config/certs/certs.zip --in config/certs/instances.yml --ca-cert config/certs/ca/ca.crt --ca-key config/certs/ca/ca.key;
           unzip config/certs/certs.zip -d config/certs;
@@ -121,7 +115,7 @@ services:
     image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
     container_name: ecp-kibana
     volumes:
-      - certs:/usr/share/kibana/config/certs:z
+      - certs:/usr/share/kibana/config/certs
       - kibanadata:/usr/share/kibana/data
       - ./kibana.yml:/usr/share/kibana/config/kibana.yml:Z
     ports:
@@ -156,7 +150,7 @@ services:
       image: docker.elastic.co/beats/elastic-agent:${STACK_VERSION}
       container_name: ecp-fleet-server
       volumes:
-        - certs:/certs:z
+        - certs:/certs
       ports:
         - ${FLEET_PORT}:8220
       restart: always

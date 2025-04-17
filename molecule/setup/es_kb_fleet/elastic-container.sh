@@ -216,7 +216,7 @@ case "${ACTION}" in
 
   echo "Starting Elastic Stack network and containers."
 
-  DOCKER_HOST_NAME=$(hostname) DOCKER_HOST_IP=$ipvar ${COMPOSE} up -d --no-deps
+  ${COMPOSE} up -d --no-deps 
 
   configure_kbn 1>&2 2>&3
 
