@@ -14,7 +14,7 @@ jobs:
         version:
           - 8.16.1
         integration:
-          - panw
+          - elasticsearch
         distro:
           - ubuntu-22.04
 
